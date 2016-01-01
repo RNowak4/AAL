@@ -14,12 +14,6 @@ private:
     int *tab;
     vector<int> movesList;
 
-    void NieZnakNap(int znak);
-
-    void NieZnakNap(int znak, int pocz);
-
-    void NaPoczatek(int kolor);
-
 public:
     Shelf(const unsigned long size);
 
@@ -54,10 +48,6 @@ public:
     void move(const int pos);
 
     void show();
-
-    int *getTab() const {
-        return tab;
-    }
 
     const vector<int> &getMovesList() const {
         return movesList;

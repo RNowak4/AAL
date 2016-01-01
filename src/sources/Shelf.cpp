@@ -90,17 +90,6 @@ void Shelf::patternSort() {
     }
 }
 
-void Shelf::NieZnakNap(int znak) {
-    NieZnakNap(znak, startIdx);
-}
-
-void Shelf::NieZnakNap(int znak, int pocz) {
-    int k = pocz;
-    while (tab[k] == znak)
-        ++k;
-    moveToBeg(k, pocz);
-}
-
 int Shelf::findPattern(const int color, const int endPos) {
     for (int i = startIdx, j = counter[color]; i < size; i++) {
         if (i > (endPos - 4) || i > (size - 4) || j < 4)
@@ -343,91 +332,6 @@ void Shelf::show() {
     }
 
     cout << ret << endl;
-}
-
-void Shelf::NaPoczatek(int kolor) {
-    int lio, Glowa, Ogon, ltr;
-    unsigned long lwtr;
-    // li - liczba pojemnikow koloru innego niz kolor w nieuporzadkowanym zbiorze pojemnikow
-    unsigned long li = size - startIdx - counter[kolor];
-
-    if (li % 4 != 0) {
-        moveToBeg(findColorPos(kolor, startIdx), startIdx);
-
-        if (li % 4 == 1) {
-            moveToBeg(findColorPos(kolor, startIdx + 1), startIdx + 1);
-            moveToBeg(findColorPos(kolor, startIdx + 2), startIdx + 2);
-        } else if (li % 4 == 2) {
-            moveToBeg(findColorPos(kolor, startIdx + 1), startIdx + 1);
-            moveToBeg(findOtherColorPos(kolor, startIdx + 2), startIdx + 2);
-        } else if (li % 4 == 3) {
-            moveToBeg(findOtherColorPos(kolor, startIdx + 1), startIdx + 1);
-            moveToBeg(findOtherColorPos(kolor, startIdx + 2), startIdx + 2);
-        }
-
-        moveToBeg(findOtherColorPos(kolor, startIdx + 3), startIdx + 3);
-        moveToBeg(findColorPos(kolor, startIdx + 4), startIdx + 4);
-        moveToBeg(findColorPos(kolor, startIdx + 5), startIdx + 5);
-        moveToBeg(findColorPos(kolor, startIdx + 6), startIdx + 6);
-    } else {
-        moveToBeg(findColorPos(kolor, startIdx), startIdx);
-        moveToBeg(findColorPos(kolor, startIdx + 1), startIdx + 1);
-        moveToBeg(findColorPos(kolor, startIdx + 2), startIdx + 2);
-    }
-
-    Ogon = Glowa = (int) (size);
-    lwtr = li / 4;
-    ltr = lio = 0;
-
-    while (ltr < lwtr) {
-        if (lio < 4) {
-            while (tab[--Glowa] == kolor);
-
-            int liczI = 1;
-            if (tab[--Glowa] != kolor)
-                ++liczI;
-            if (tab[--Glowa] != kolor)
-                ++liczI;
-            if (tab[--Glowa] != kolor)
-                ++liczI;
-
-            if (liczI < 4) {
-                move(Glowa);
-                Ogon -= 4;
-                lio += liczI;
-            } else
-                ++ltr;
-        } else {
-            for (int i = Ogon; i < Ogon + 4; ++i) {
-                // tutaj jest problem
-                NieZnakNap(kolor, i - 1);
-            }
-            Ogon += 4;
-            lio -= 4;
-            ++ltr;
-
-            if (lio == 0) {
-                Ogon = (int) (size);
-            } else {
-                while (tab[Ogon] == kolor)
-                    ++Ogon;
-
-                if (Ogon < size - 4)
-                    move(Ogon);
-                Ogon = (int) (size);
-            }
-        }
-    }
-
-    if (li % 4 != 0) {
-        move(startIdx);
-    }
-
-    for (int k = 0, i = startIdx; k < lwtr; ++k) {
-        while (tab[i] == kolor)
-            ++i;
-        move(i);
-    }
 }
 
 void Shelf::fastSort() {
