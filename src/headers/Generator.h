@@ -8,7 +8,7 @@ using namespace std;
 
 class Generator {
 private:
-    const static int MAX_TOSS = 101;
+    const static int MAX_TOSS = 100;
     const static int DIV = 4;
     vector<int> initVector;
 

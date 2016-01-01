@@ -14,6 +14,12 @@ private:
     int *tab;
     vector<int> movesList;
 
+    void NieZnakNap(int znak);
+
+    void NieZnakNap(int znak, int pocz);
+
+    void NaPoczatek(int kolor);
+
 public:
     Shelf(const unsigned long size);
 
@@ -23,11 +29,27 @@ public:
 
     void patternSort();
 
+    void fastSort();
+
     int findPattern(const int color, const int endPos);
+
+    void makeSpaces(const int color);
+
+    void moveFromEnd(const int color, const int pos);
+
+    void moveOtherFromEnd(const int color, const int pos);
 
     void moveToBeg(int pos);
 
-    int findColorPos(const int color);
+    void moveToBeg(int pos, int startIdx);
+
+    int findColorPos(const int color) const;
+
+    int findColorPos(const int color, const int startPos) const;
+
+    int findOtherColorPos(const int color) const;
+
+    int findOtherColorPos(const int color, const int startPos) const;
 
     void move(const int pos);
 

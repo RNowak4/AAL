@@ -90,6 +90,17 @@ void Shelf::patternSort() {
     }
 }
 
+void Shelf::NieZnakNap(int znak) {
+    NieZnakNap(znak, startIdx);
+}
+
+void Shelf::NieZnakNap(int znak, int pocz) {
+    int k = pocz;
+    while (tab[k] == znak)
+        ++k;
+    moveToBeg(k, pocz);
+}
+
 int Shelf::findPattern(const int color, const int endPos) {
     for (int i = startIdx, j = counter[color]; i < size; i++) {
         if (i > (endPos - 4) || i > (size - 4) || j < 4)
@@ -107,8 +118,11 @@ int Shelf::findPattern(const int color, const int endPos) {
     return -1;
 }
 
-
 void Shelf::moveToBeg(int pos) {
+    moveToBeg(pos, startIdx);
+}
+
+void Shelf::moveToBeg(int pos, int startIdx) {
     if (pos == startIdx)
         return;
 
@@ -261,14 +275,34 @@ void Shelf::moveToBeg(int pos) {
     }
 }
 
-int Shelf::findColorPos(const int color) {
+int Shelf::findColorPos(const int color) const {
+    return findColorPos(color, startIdx);
+}
+
+int Shelf::findColorPos(const int color, const int startPos) const {
     if (color < 0 || color > 3)
         throw runtime_error("Bad color ID!");
 
-    int i = startIdx;
+    int i = startPos;
 
     //noinspection StatementWithEmptyBody
     while (i < size && tab[i++] != color);
+
+    return --i;
+}
+
+int Shelf::findOtherColorPos(const int color) const {
+    return findOtherColorPos(color, startIdx);
+}
+
+int Shelf::findOtherColorPos(const int color, const int startPos) const {
+    if (color < 0 || color > 3)
+        throw runtime_error("Bad color ID!");
+
+    int i = startPos;
+
+    //noinspection StatementWithEmptyBody
+    while (i < size && tab[i++] == color);
 
     return --i;
 }
@@ -309,4 +343,201 @@ void Shelf::show() {
     }
 
     cout << ret << endl;
+}
+
+void Shelf::NaPoczatek(int kolor) {
+    int lio, Glowa, Ogon, ltr;
+    unsigned long lwtr;
+    // li - liczba pojemnikow koloru innego niz kolor w nieuporzadkowanym zbiorze pojemnikow
+    unsigned long li = size - startIdx - counter[kolor];
+
+    if (li % 4 != 0) {
+        moveToBeg(findColorPos(kolor, startIdx), startIdx);
+
+        if (li % 4 == 1) {
+            moveToBeg(findColorPos(kolor, startIdx + 1), startIdx + 1);
+            moveToBeg(findColorPos(kolor, startIdx + 2), startIdx + 2);
+        } else if (li % 4 == 2) {
+            moveToBeg(findColorPos(kolor, startIdx + 1), startIdx + 1);
+            moveToBeg(findOtherColorPos(kolor, startIdx + 2), startIdx + 2);
+        } else if (li % 4 == 3) {
+            moveToBeg(findOtherColorPos(kolor, startIdx + 1), startIdx + 1);
+            moveToBeg(findOtherColorPos(kolor, startIdx + 2), startIdx + 2);
+        }
+
+        moveToBeg(findOtherColorPos(kolor, startIdx + 3), startIdx + 3);
+        moveToBeg(findColorPos(kolor, startIdx + 4), startIdx + 4);
+        moveToBeg(findColorPos(kolor, startIdx + 5), startIdx + 5);
+        moveToBeg(findColorPos(kolor, startIdx + 6), startIdx + 6);
+    } else {
+        moveToBeg(findColorPos(kolor, startIdx), startIdx);
+        moveToBeg(findColorPos(kolor, startIdx + 1), startIdx + 1);
+        moveToBeg(findColorPos(kolor, startIdx + 2), startIdx + 2);
+    }
+
+    Ogon = Glowa = (int) (size);
+    lwtr = li / 4;
+    ltr = lio = 0;
+
+    while (ltr < lwtr) {
+        if (lio < 4) {
+            while (tab[--Glowa] == kolor);
+
+            int liczI = 1;
+            if (tab[--Glowa] != kolor)
+                ++liczI;
+            if (tab[--Glowa] != kolor)
+                ++liczI;
+            if (tab[--Glowa] != kolor)
+                ++liczI;
+
+            if (liczI < 4) {
+                move(Glowa);
+                Ogon -= 4;
+                lio += liczI;
+            } else
+                ++ltr;
+        } else {
+            for (int i = Ogon; i < Ogon + 4; ++i) {
+                // tutaj jest problem
+                NieZnakNap(kolor, i - 1);
+            }
+            Ogon += 4;
+            lio -= 4;
+            ++ltr;
+
+            if (lio == 0) {
+                Ogon = (int) (size);
+            } else {
+                while (tab[Ogon] == kolor)
+                    ++Ogon;
+
+                if (Ogon < size - 4)
+                    move(Ogon);
+                Ogon = (int) (size);
+            }
+        }
+    }
+
+    if (li % 4 != 0) {
+        move(startIdx);
+    }
+
+    for (int k = 0, i = startIdx; k < lwtr; ++k) {
+        while (tab[i] == kolor)
+            ++i;
+        move(i);
+    }
+}
+
+void Shelf::fastSort() {
+    for (int i = 0; i < 3; i++) {
+        if (counter[i] > 6) {
+            makeSpaces(i);
+        }
+        else {
+            for (int j = 0; j < counter[i]; ++j) {
+                moveToBeg(findColorPos(i));
+                ++startIdx;
+            }
+        }
+    }
+}
+
+void Shelf::makeSpaces(const int color) {
+    int l = (int) (size - startIdx - this->counter[color]);
+    int n = 0;
+    int tmp = startIdx;
+
+    if (l % 4 == 1) {
+        moveToBeg(findColorPos(color), startIdx++);
+        moveToBeg(findColorPos(color), startIdx++);
+        moveToBeg(findColorPos(color), startIdx++);
+        moveToBeg(findOtherColorPos(color), startIdx++);
+        n += 3;
+        l -= 1;
+    } else if (l % 4 == 2) {
+        moveToBeg(findColorPos(color), startIdx++);
+        moveToBeg(findColorPos(color), startIdx++);
+        moveToBeg(findOtherColorPos(color), startIdx++);
+        moveToBeg(findOtherColorPos(color), startIdx++);
+        n += 2;
+        l -= 2;
+    } else if (l % 4 == 3) {
+        moveToBeg(findColorPos(color), startIdx++);
+        moveToBeg(findOtherColorPos(color), startIdx++);
+        moveToBeg(findOtherColorPos(color), startIdx++);
+        moveToBeg(findOtherColorPos(color), startIdx++);
+        n += 1;
+        l -= 3;
+    }
+
+    int counter;
+    for (int i = startIdx; i < size - 5; ++i) {
+        if (tab[i] != color) {
+            ++i;
+            counter = 1;
+            while (tab[i] != color) {
+                ++counter;
+                ++i;
+            }
+            if (counter % 4 == 1) {
+                moveOtherFromEnd(color, i++);
+                moveOtherFromEnd(color, i++);
+                moveOtherFromEnd(color, i);
+            } else if (counter % 4 == 2) {
+                moveOtherFromEnd(color, i++);
+                moveOtherFromEnd(color, i);
+            } else if (counter % 4 == 3) {
+                moveOtherFromEnd(color, i);
+            }
+        }
+    }
+
+    for (int k = 0, i = startIdx; k < l / 4; ++k) {
+        while (tab[i] == color)
+            ++i;
+        move(i);
+    }
+
+    counter = 0;
+    for (int i = (int) (size - 5); i < size; ++i) {
+        if (tab[i] == color)
+            ++counter;
+    }
+
+    startIdx += this->counter[color] - counter - n;
+
+    for(int i = 0; i < counter; ++i) {
+        moveFromEnd(color, startIdx++);
+    }
+
+    if (n != 0) {
+        move(tmp);
+        startIdx -= 4;
+
+        for (int i = 0; i < l / 4; ++i) {
+            move(startIdx);
+        }
+
+        startIdx += n;
+    }
+}
+
+void Shelf::moveOtherFromEnd(const int color, const int pos) {
+    for (int i = (int) (size - 1); i >= pos; --i) {
+        if (tab[i] != color) {
+            moveToBeg(i, pos);
+            break;
+        }
+    }
+}
+
+void Shelf::moveFromEnd(const int color, const int pos) {
+    for (int i = (int) (size - 1); i >= pos; --i) {
+        if (tab[i] == color) {
+            moveToBeg(i, pos);
+            break;
+        }
+    }
 }

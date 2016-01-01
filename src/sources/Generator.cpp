@@ -19,7 +19,7 @@ Generator::Generator(int size, int p) {
         int toss = rand() % MAX_TOSS;
         int prev = initVector.at(i - 1);
 
-        if (toss <= p) {
+        if (toss < p) {
             initVector.push_back(prev);
         } else {
             int substract = MAX_TOSS - p;

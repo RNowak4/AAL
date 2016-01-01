@@ -7,13 +7,14 @@
 #include "Shelf.h"
 
 enum SortType {
-    PRIMITIVE, PATTERN, OPTIMAL
+    PRIMITIVE, PATTERN, FAST
 };
 
 class Benchmark {
 private:
     shared_ptr<Shelf> shelf_1;
     shared_ptr<Shelf> shelf_2;
+    shared_ptr<Shelf> shelf_3;
 
 public:
     Benchmark(int startFrom, int endIn, int step, int p);
