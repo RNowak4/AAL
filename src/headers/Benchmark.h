@@ -16,10 +16,12 @@ private:
     shared_ptr<Shelf> shelf_2;
     shared_ptr<Shelf> shelf_3;
 
+    static void doSort(shared_ptr<Shelf> *shelf, int i, SortType sortType);
+
 public:
     Benchmark(int startFrom, int endIn, int step, int p);
 
-    long countTime(shared_ptr<Shelf> shelfToSort, const SortType sortType);
+    static long countTime(shared_ptr<Shelf> shelfToSort, const SortType sortType);
 };
 
 

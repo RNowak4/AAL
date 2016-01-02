@@ -7,7 +7,7 @@ using namespace std;
 int main() {
     srand((unsigned int) time(NULL));
 
-    new Benchmark(5000, 5000, 1000, 25);
+    new Benchmark(1000, 10000, 1000, 60);
 
     return 0;
 }
