@@ -445,3 +445,7 @@ void Shelf::moveFromEnd(const int color, const int pos) {
         }
     }
 }
+
+Shelf::~Shelf() {
+    delete[] tab;
+}

@@ -19,6 +19,8 @@ public:
 
     Shelf(const vector<int> &initVector);
 
+    ~Shelf();
+
     void sort();
 
     void patternSort();
