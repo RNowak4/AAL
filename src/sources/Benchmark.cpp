@@ -2,36 +2,46 @@
 #include <thread>
 #include "../headers/Benchmark.h"
 
-Benchmark::Benchmark(int startFrom, int endIn, int step, int p = 25) {
-    shared_ptr<thread> t1, t2, t3;
+Benchmark::Benchmark(int startFrom, int endIn, int step, bool randomInput) {
+    int p = 25;
+    if (randomInput) {
+        cout <<
+        "Podaj wartosc parametru 'p', ktory okresla szanse wylosowania "
+                "nastepnego elementu tablicy, takiego samego, jak poprzedni" << endl;
+
+        while (true) {
+            cin >> p;
+            if (p >= 0 && p <= 100)
+                break;
+            else
+                cout << "'p' musi byc z przedzialu [0;100]";
+        }
+    }
 
     for (int i = startFrom; i <= endIn; i += step) {
-        auto genVector = (new Generator(i, p))->getInitVector();
-        shelf_1.reset(new Shelf(genVector));
-        shelf_2.reset(new Shelf(genVector));
-        shelf_3.reset(new Shelf(genVector));
+        vector<int> inputVector;
+        if (randomInput)
+            inputVector = (new Generator(i, p))->getInitVector();
+        else
+            inputVector = readInputVector();
 
-        t1.reset(new thread(doSort, &shelf_1, i, PRIMITIVE));
-        t2.reset(new thread(doSort, &shelf_2, i, PATTERN));
-        t3.reset(new thread(doSort, &shelf_3, i, FAST));
+        shelf_1.reset(new Shelf(inputVector));
+        shelf_2.reset(new Shelf(inputVector));
+        shelf_3.reset(new Shelf(inputVector));
 
-        t1->join();
-        t2->join();
-        t3->join();
+        shared_ptr<long> dataSet(new long[4]);
+        dataSet.get()[0] = i;
 
-//        cout << "Sortowanie prymitywne dla: " << i << " wynioslo: " << countTime(shelf_1, PRIMITIVE) << "ms.";
-//
-//        cout << endl;
-//
-//        cout << "Sortowanie pattern-sort dla: " << i << " wynioslo: " << countTime(shelf_2, PATTERN) << "ms.";
-//
-//        cout << endl;
-//
-//        cout << "Sortowanie fast-sort dla: " << i << " wynioslo: " << countTime(shelf_3, FAST) << "ms.";
-//
-//        shelf_3->show();
-//
-        cout << endl;
+        long runTime = countTime(shelf_1, PRIMITIVE);
+        dataSet.get()[1] = runTime;
+
+        runTime = countTime(shelf_2, PATTERN);
+        dataSet.get()[2] = runTime;
+
+        runTime = countTime(shelf_3, FAST);
+        dataSet.get()[3] = runTime;
+
+        resultsVector.push_back(dataSet);
     }
 }
 
@@ -62,4 +72,22 @@ void Benchmark::doSort(shared_ptr<Shelf> *shelf, int i, SortType sortType) {
     else
         sortStr = "szybkie";
     cout << "Sortowanie " << sortStr << " dla: " << i << " wynioslo: " << countTime(*shelf, sortType) << "ms." << endl;
+}
+
+const vector<int> Benchmark::readInputVector() {
+    cout << "Wpisz wektor skladajacy sie z liczb 0-3. Wpisz '-1', zeby zakonczyc" << endl;
+
+    vector<int> inputVector;
+    while (true) {
+        int readNum;
+        cin >> readNum;
+        if (readNum == -1)
+            break;
+        else if (readNum >= 0 && readNum <= 3)
+            inputVector.push_back(readNum);
+        else
+            cout << "Podales zla liczbe!";
+    }
+
+    return inputVector;
 }
