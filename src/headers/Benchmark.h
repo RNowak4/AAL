@@ -10,8 +10,13 @@ enum SortType {
     PRIMITIVE, PATTERN, FAST
 };
 
+enum {
+    DEFAULT_PRECISION = 1
+};
+
 class Benchmark {
 private:
+    int precision;
     shared_ptr<Shelf> shelf_1;
     shared_ptr<Shelf> shelf_2;
     shared_ptr<Shelf> shelf_3;
@@ -33,6 +38,11 @@ public:
     }
 
     const vector<int> readInputVector();
+
+
+    void setPrecision(int precision) {
+        Benchmark::precision = precision;
+    }
 };
 
 

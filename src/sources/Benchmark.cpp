@@ -2,7 +2,7 @@
 #include <thread>
 #include "../headers/Benchmark.h"
 
-Benchmark::Benchmark() {
+Benchmark::Benchmark() : precision(DEFAULT_PRECISION) {
 }
 
 void Benchmark::runUser() {
