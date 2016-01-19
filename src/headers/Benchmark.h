@@ -17,12 +17,16 @@ private:
     shared_ptr<Shelf> shelf_3;
     vector<shared_ptr<long> > resultsVector;
 
+    void runBenchmark(const vector<int> &inputVector);
+
 public:
     Benchmark();
 
-    Benchmark(int startFrom, int endIn, int step);
-
     static long countTime(shared_ptr<Shelf> shelfToSort, const SortType sortType);
+
+    void runUser();
+
+    void runRandom(int startFrom, int endIn, int step);
 
     const vector<shared_ptr<long>> &getResultsVector() const {
         return resultsVector;

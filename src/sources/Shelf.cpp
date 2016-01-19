@@ -412,7 +412,7 @@ void Shelf::makeSpaces(const int color) {
 
     startIdx += this->counter[color] - counter - n;
 
-    for(int i = 0; i < counter; ++i) {
+    for (int i = 0; i < counter; ++i) {
         moveFromEnd(color, startIdx++);
     }
 

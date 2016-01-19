@@ -3,31 +3,16 @@
 #include "../headers/Benchmark.h"
 
 Benchmark::Benchmark() {
-    auto inputVector = readInputVector();
-
-    shelf_1.reset(new Shelf(inputVector));
-    shelf_2.reset(new Shelf(inputVector));
-    shelf_3.reset(new Shelf(inputVector));
-
-    shared_ptr<long> dataSet(new long[4]);
-    dataSet.get()[0] = inputVector.size();
-
-    long runTime = countTime(shelf_1, PRIMITIVE);
-    dataSet.get()[1] = runTime;
-
-    runTime = countTime(shelf_2, PATTERN);
-    dataSet.get()[2] = runTime;
-
-    runTime = countTime(shelf_3, FAST);
-    dataSet.get()[3] = runTime;
-
-    resultsVector.push_back(dataSet);
 }
 
-Benchmark::Benchmark(int startFrom, int endIn, int step) {
+void Benchmark::runUser() {
+    auto inputVector = readInputVector();
+    runBenchmark(inputVector);
+}
+
+void Benchmark::runRandom(int startFrom, int endIn, int step) {
     int p = 25;
-    cout <<
-    "Podaj wartosc parametru 'p', ktory okresla szanse wylosowania "
+    cout << "Podaj wartosc parametru 'p', ktory okresla szanse wylosowania "
             "nastepnego elementu tablicy, takiego samego, jak poprzedni" << endl;
 
     while (true) {
@@ -40,25 +25,31 @@ Benchmark::Benchmark(int startFrom, int endIn, int step) {
 
     for (int i = startFrom; i <= endIn; i += step) {
         auto inputVector = (new Generator(i, p))->getInitVector();
-
-        shelf_1.reset(new Shelf(inputVector));
-        shelf_2.reset(new Shelf(inputVector));
-        shelf_3.reset(new Shelf(inputVector));
-
-        shared_ptr<long> dataSet(new long[4]);
-        dataSet.get()[0] = i;
-
-        long runTime = countTime(shelf_1, PRIMITIVE);
-        dataSet.get()[1] = runTime;
-
-        runTime = countTime(shelf_2, PATTERN);
-        dataSet.get()[2] = runTime;
-
-        runTime = countTime(shelf_3, FAST);
-        dataSet.get()[3] = runTime;
-
-        resultsVector.push_back(dataSet);
+        runBenchmark(inputVector);
     }
+}
+
+void Benchmark::runBenchmark(const vector<int> &inputVector) {
+    shelf_1.reset(new Shelf(inputVector));
+    shelf_2.reset(new Shelf(inputVector));
+    shelf_3.reset(new Shelf(inputVector));
+
+    shared_ptr<long> dataSet(new long[7]);
+    dataSet.get()[0] = inputVector.size();
+
+    long runTime = countTime(shelf_1, PRIMITIVE);
+    dataSet.get()[1] = runTime;
+    dataSet.get()[2] = shelf_1->getMovesList().size();
+
+    runTime = countTime(shelf_2, PATTERN);
+    dataSet.get()[3] = runTime;
+    dataSet.get()[4] = shelf_2->getMovesList().size();
+
+    runTime = countTime(shelf_3, FAST);
+    dataSet.get()[5] = runTime;
+    dataSet.get()[6] = shelf_3->getMovesList().size();
+
+    resultsVector.push_back(dataSet);
 }
 
 long Benchmark::countTime(shared_ptr<Shelf> shelfToSort, const SortType sortType) {
