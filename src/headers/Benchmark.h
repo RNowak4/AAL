@@ -12,16 +12,15 @@ enum SortType {
 
 class Benchmark {
 private:
-    bool randomInput;
     shared_ptr<Shelf> shelf_1;
     shared_ptr<Shelf> shelf_2;
     shared_ptr<Shelf> shelf_3;
     vector<shared_ptr<long> > resultsVector;
 
-    static void doSort(shared_ptr<Shelf> *shelf, int i, SortType sortType);
-
 public:
-    Benchmark(int startFrom, int endIn, int step, bool randomInput);
+    Benchmark();
+
+    Benchmark(int startFrom, int endIn, int step);
 
     static long countTime(shared_ptr<Shelf> shelfToSort, const SortType sortType);
 

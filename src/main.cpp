@@ -26,7 +26,15 @@ int main(int argc, char **argv) {
             return BAD_INPUT_ARGUMENTS;
     }
 
-    shared_ptr<Benchmark> benchmark(new Benchmark(1000, 2000, 1000, randomInput));
+    shared_ptr<Benchmark> benchmark;
+    if (randomInput) {
+        cout << "Podaj wartosci poczatka, konca oraz kroku:" << endl;
+        unsigned start, end, step;
+        cin >> start >> end >> step;
+        benchmark.reset(new Benchmark(start, end, step));
+    }
+    else
+        benchmark.reset(new Benchmark());
 
     if (showTable) {
         cout.width(DEFAULT_TABLE_WIDTH);

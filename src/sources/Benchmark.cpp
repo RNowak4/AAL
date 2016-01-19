@@ -2,28 +2,44 @@
 #include <thread>
 #include "../headers/Benchmark.h"
 
-Benchmark::Benchmark(int startFrom, int endIn, int step, bool randomInput) {
-    int p = 25;
-    if (randomInput) {
-        cout <<
-        "Podaj wartosc parametru 'p', ktory okresla szanse wylosowania "
-                "nastepnego elementu tablicy, takiego samego, jak poprzedni" << endl;
+Benchmark::Benchmark() {
+    auto inputVector = readInputVector();
 
-        while (true) {
-            cin >> p;
-            if (p >= 0 && p <= 100)
-                break;
-            else
-                cout << "'p' musi byc z przedzialu [0;100]";
-        }
+    shelf_1.reset(new Shelf(inputVector));
+    shelf_2.reset(new Shelf(inputVector));
+    shelf_3.reset(new Shelf(inputVector));
+
+    shared_ptr<long> dataSet(new long[4]);
+    dataSet.get()[0] = inputVector.size();
+
+    long runTime = countTime(shelf_1, PRIMITIVE);
+    dataSet.get()[1] = runTime;
+
+    runTime = countTime(shelf_2, PATTERN);
+    dataSet.get()[2] = runTime;
+
+    runTime = countTime(shelf_3, FAST);
+    dataSet.get()[3] = runTime;
+
+    resultsVector.push_back(dataSet);
+}
+
+Benchmark::Benchmark(int startFrom, int endIn, int step) {
+    int p = 25;
+    cout <<
+    "Podaj wartosc parametru 'p', ktory okresla szanse wylosowania "
+            "nastepnego elementu tablicy, takiego samego, jak poprzedni" << endl;
+
+    while (true) {
+        cin >> p;
+        if (p >= 0 && p <= 100)
+            break;
+        else
+            cout << "'p' musi byc z przedzialu [0;100]";
     }
 
     for (int i = startFrom; i <= endIn; i += step) {
-        vector<int> inputVector;
-        if (randomInput)
-            inputVector = (new Generator(i, p))->getInitVector();
-        else
-            inputVector = readInputVector();
+        auto inputVector = (new Generator(i, p))->getInitVector();
 
         shelf_1.reset(new Shelf(inputVector));
         shelf_2.reset(new Shelf(inputVector));
@@ -61,17 +77,6 @@ long Benchmark::countTime(shared_ptr<Shelf> shelfToSort, const SortType sortType
     end = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now().time_since_epoch()).count();
 
     return (end - start);
-}
-
-void Benchmark::doSort(shared_ptr<Shelf> *shelf, int i, SortType sortType) {
-    string sortStr;
-    if (sortType == PRIMITIVE)
-        sortStr = "prymitywne";
-    else if (sortType == PATTERN)
-        sortStr = "pattern-sort";
-    else
-        sortStr = "szybkie";
-    cout << "Sortowanie " << sortStr << " dla: " << i << " wynioslo: " << countTime(*shelf, sortType) << "ms." << endl;
 }
 
 const vector<int> Benchmark::readInputVector() {
