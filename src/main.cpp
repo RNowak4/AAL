@@ -10,6 +10,8 @@ enum {
     BAD_INPUT_ARGUMENTS = -11
 };
 
+void stepByStepPresentation(shared_ptr<Benchmark> benchmark);
+
 void printHelp() {
     cout << "-random - randomly generated shelf" << endl;
     cout << "-user - user writes shelf" << endl;
@@ -42,7 +44,7 @@ int main(int argc, char **argv) {
     shared_ptr<Benchmark> benchmark(new Benchmark());
 
     if (verboseMode) {
-        benchmark->stepByStep(50, 25, FAST);
+        stepByStepPresentation(benchmark);
     } else if (randomInput) {
         cout << "Podaj wartosci poczatka, konca oraz kroku:" << endl;
         unsigned start, end, step;
@@ -58,4 +60,44 @@ int main(int argc, char **argv) {
     }
 
     return 0;
+}
+
+void stepByStepPresentation(shared_ptr<Benchmark> benchmark) {
+    cout << "Wybierz algorytm: 1) slow 2) pattern 3) fast" << endl;
+    int input;
+    do {
+        cin >> input;
+    } while (input < 0 || input > 3);
+
+    SortType sortType = PRIMITIVE;
+    switch (input) {
+        case 1:
+            sortType = PRIMITIVE;
+            break;
+
+        case 2:
+            sortType = PATTERN;
+            break;
+
+        case 3:
+            sortType = FAST;
+            break;
+
+        default:
+            exit(BAD_INPUT_ARGUMENTS);
+    }
+
+    cout << "Wpisz p" << endl;
+    int p;
+    do {
+        cin >> p;
+    } while (p < 0 || p > 100);
+
+    cout << "Wpisz size" << endl;
+    int size;
+    do {
+        cin >> size;
+    } while (size < 0 || size > 100);
+
+    benchmark->stepByStep(size, p, sortType);
 }

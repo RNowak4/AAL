@@ -34,6 +34,9 @@ opis: Uzytkownik recznie wpisuje wektor, ktory bedzie sortowany.
 -random
 opis: Wektor ktory bedzie sortowany jest generowany przez genarator wartosci losowych.
 
+-stepByStep
+opis: Program pokazuje przykladowe rozwiazanie krok po kroku
+
 -------------------------------------------------------------------------------------------------------
 4. Metoda rozwiązania.
 -------------------------------------------------------------------------------------------------------
