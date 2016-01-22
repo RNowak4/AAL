@@ -53,6 +53,8 @@ public:
 
     void showStepByStep(const vector<int> &moves);
 
+    bool testShelf() const;
+
     const vector<int> &getMovesList() const {
         return movesList;
     }

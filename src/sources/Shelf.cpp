@@ -421,7 +421,7 @@ void Shelf::makeSpaces(const int color) {
             ++counter;
     }
 
-    for (int i = startIdx-2; i < startIdx+2; ++i) {
+    for (int i = startIdx - 2; i < startIdx + 2; ++i) {
         if (tab[i] == color)
             ++counter;
     }
@@ -474,4 +474,17 @@ void Shelf::showStepByStep(const vector<int> &moves) {
         cout << i++ << ") ";
         show();
     }
+}
+
+bool Shelf::testShelf() const {
+    int last = tab[0];
+    for (int i = 1; i < size; ++i) {
+        int current = tab[i];
+        if (current < last)
+            return false;
+        else if (current > last)
+            last = current;
+    }
+
+    return true;
 }

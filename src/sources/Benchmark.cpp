@@ -26,7 +26,7 @@ void Benchmark::runRandom(int startFrom, int endIn, int step) {
     }
 
     for (int i = startFrom; i <= endIn; i += step) {
-        auto inputVector = (new Generator(i, p))->getInitVector();
+        auto inputVector = (Generator(i, p)).getInitVector();
         runBenchmark(inputVector);
     }
 }
@@ -123,13 +123,13 @@ void Benchmark::printResults() const {
 }
 
 void Benchmark::stepByStep(const int size, const int p, const SortType type) const {
-    auto vector = (new Generator(size, p))->getInitVector();
+    auto vector = (Generator(size, p)).getInitVector();
     shared_ptr<Shelf> shelfToSort(new Shelf(vector));
     shared_ptr<Shelf> shelfToPresent(new Shelf(vector));
 
-    if(type == PRIMITIVE)
+    if (type == PRIMITIVE)
         shelfToSort->sort();
-    else if(type==PATTERN)
+    else if (type == PATTERN)
         shelfToSort->patternSort();
     else
         shelfToSort->fastSort();
