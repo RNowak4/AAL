@@ -7,6 +7,10 @@
 Shelf::Shelf(const unsigned long size) : size(size) {
     tab = new int[size];
 
+    for (int k = 0; k < 4; ++k) {
+        counter[k] = 0;
+    }
+
     for (int i = 0; i < size; i++) {
         int tmp = rand() % 4;
         ++counter[tmp];
@@ -16,6 +20,10 @@ Shelf::Shelf(const unsigned long size) : size(size) {
 
 Shelf::Shelf(const vector<int> &initVector) : size(initVector.size()) {
     tab = new int[size];
+
+    for (int k = 0; k < 4; ++k) {
+        counter[k] = 0;
+    }
 
     int j = 0;
     for (auto i : initVector) {
@@ -37,7 +45,6 @@ void Shelf::sort() {
         }
     }
 }
-
 
 void Shelf::patternSort() {
     if (counter[3] < 5) {
@@ -275,9 +282,10 @@ int Shelf::findColorPos(const int color, const int startPos) const {
     int i = startPos;
 
     //noinspection StatementWithEmptyBody
-    while (i < size && tab[i++] != color);
+    while (i < size && tab[i] != color)
+        ++i;
 
-    return --i;
+    return i;
 }
 
 int Shelf::findOtherColorPos(const int color) const {
@@ -316,6 +324,7 @@ void Shelf::move(const int pos) {
 }
 
 void Shelf::show() {
+
     string ret = "";
 
     for (int i = 0; i < size; i++) {
@@ -377,7 +386,7 @@ void Shelf::makeSpaces(const int color) {
     }
 
     int counter;
-    for (int i = startIdx; i < size - 5; ++i) {
+    for (int i = startIdx; i < size - 8; ++i) {
         if (tab[i] != color) {
             ++i;
             counter = 1;
@@ -401,11 +410,18 @@ void Shelf::makeSpaces(const int color) {
     for (int k = 0, i = startIdx; k < l / 4; ++k) {
         while (tab[i] == color)
             ++i;
+        if (i > size - 4)
+            break;
         move(i);
     }
 
     counter = 0;
-    for (int i = (int) (size - 5); i < size; ++i) {
+    for (int i = (int) (size - 4); i < size; ++i) {
+        if (tab[i] == color)
+            ++counter;
+    }
+
+    for (int i = startIdx-2; i < startIdx+2; ++i) {
         if (tab[i] == color)
             ++counter;
     }
@@ -448,4 +464,14 @@ void Shelf::moveFromEnd(const int color, const int pos) {
 
 Shelf::~Shelf() {
     delete[] tab;
+}
+
+void Shelf::showStepByStep(const vector<int> &moves) {
+    int i = 0;
+    for (auto pos : moves) {
+        move(pos);
+
+        cout << i++ << ") ";
+        show();
+    }
 }

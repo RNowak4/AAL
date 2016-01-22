@@ -51,6 +51,8 @@ public:
 
     void show();
 
+    void showStepByStep(const vector<int> &moves);
+
     const vector<int> &getMovesList() const {
         return movesList;
     }

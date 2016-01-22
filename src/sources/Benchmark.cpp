@@ -1,5 +1,7 @@
 #include <iostream>
 #include <thread>
+#include <iomanip>
+#include <cmath>
 #include "../headers/Benchmark.h"
 
 Benchmark::Benchmark() : precision(DEFAULT_PRECISION) {
@@ -86,4 +88,52 @@ const vector<int> Benchmark::readInputVector() {
     }
 
     return inputVector;
+}
+
+void Benchmark::showAlgorithmInfo(const string &algorithmInfo, int complexity,
+                                  const vector<shared_ptr<long> > &resultVector, int start, int end) const {
+
+    cout << setw(DEFAULT_TABLE_WIDTH * 4) << setiosflags(ios::left) << algorithmInfo << endl;
+    cout << setw(DEFAULT_TABLE_WIDTH) << setiosflags(ios::left) << "input size";
+    cout << setw(DEFAULT_TABLE_WIDTH) << setiosflags(ios::left) << "time";
+    cout << setw(DEFAULT_TABLE_WIDTH) << setiosflags(ios::left) << "moves";
+    cout << setw(DEFAULT_TABLE_WIDTH) << setiosflags(ios::left) << "q parameter";
+    cout << endl;
+
+    double tMed = resultVector.at(resultVector.size() / 2).get()[start];
+    double TMed = pow(resultVector.at(resultVector.size() / 2).get()[0], complexity);
+    for (unsigned long i = 0; i < resultVector.size(); ++i) {
+        const long *dataSet = resultVector.at(i).get();
+        cout << setw(DEFAULT_TABLE_WIDTH) << setiosflags(ios::left) << dataSet[0];
+        for (int j = start; j <= end; ++j) {
+            cout << setw(DEFAULT_TABLE_WIDTH) << setiosflags(ios::left) << dataSet[j];
+        }
+        double T = pow(dataSet[0], complexity);
+        double q = (dataSet[start] * TMed) / (T * tMed);
+        cout << setw(DEFAULT_TABLE_WIDTH) << setiosflags(ios::left) << q;
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void Benchmark::printResults() const {
+    showAlgorithmInfo("Slow sort - O(n^3)", 3, resultsVector, 1, 2);
+    showAlgorithmInfo("Pattern sort - O(n^3)", 3, resultsVector, 3, 4);
+    showAlgorithmInfo("Fast sort - O(n^3)", 3, resultsVector, 5, 6);
+}
+
+void Benchmark::stepByStep(const int size, const int p, const SortType type) const {
+    auto vector = (new Generator(size, p))->getInitVector();
+    shared_ptr<Shelf> shelfToSort(new Shelf(vector));
+    shared_ptr<Shelf> shelfToPresent(new Shelf(vector));
+
+    if(type == PRIMITIVE)
+        shelfToSort->sort();
+    else if(type==PATTERN)
+        shelfToSort->patternSort();
+    else
+        shelfToSort->fastSort();
+
+    shelfToPresent->showStepByStep(shelfToSort->getMovesList());
+
 }

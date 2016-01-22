@@ -11,7 +11,8 @@ enum SortType {
 };
 
 enum {
-    DEFAULT_PRECISION = 1
+    DEFAULT_PRECISION = 1,
+    DEFAULT_TABLE_WIDTH = 15
 };
 
 class Benchmark {
@@ -23,6 +24,9 @@ private:
     vector<shared_ptr<long> > resultsVector;
 
     void runBenchmark(const vector<int> &inputVector);
+
+    void showAlgorithmInfo(const string &algorithmInfo, int complexity, const vector<shared_ptr<long> > &resultVector,
+                           int start, int end) const;
 
 public:
     Benchmark();
@@ -39,10 +43,13 @@ public:
 
     const vector<int> readInputVector();
 
+    void printResults() const;
 
     void setPrecision(int precision) {
         Benchmark::precision = precision;
     }
+
+    void stepByStep(const int size, const int p, const SortType) const;
 };
 
 

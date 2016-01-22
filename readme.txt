@@ -37,7 +37,25 @@ opis: Wektor ktory bedzie sortowany jest generowany przez genarator wartosci los
 -------------------------------------------------------------------------------------------------------
 4. Metoda rozwiązania.
 -------------------------------------------------------------------------------------------------------
+Po krótce omówione metody rozwiązania. Szczegółowy opis w dokmentacji końcowej.
 
+Pierwsza metoda polega na kolejnym sortowaniu kolorów - począwszy od "C", a końcyzwszy na "M".
+Polega na kolejnym znajdowaniu następnych pojemników sortowanego koloru i przenoszeniu ich na
+koniec zbioru pojemników posortowanych a następnie powiększeniu tego zbioru o 1.
+
+Druga metoda różni się tym od pierwszej, że najpierw szukamy czwórek koloru sortowanego
+i takie czwórki przenosimy na koniec zbioru pojemników posortowanych. Jeśli w zbiorze
+pojemników nieposortowanych nie ma już szukanych czwórek, to kontynuujemy sortowanie
+metodą pierwszą.
+
+Trzecia metoda polega na tworzeniu między pojemnikami koloru sortowanego przestrzeni złożonych
+z pojemników kolorów innych w liczbie będącej wielokrotnością 4. Następnie przenosimy czwórkami
+pojemniki kolorów innych na koniec zbioru pojemników nieposortowanych. Po wykonaniu takiego działania,
+na początku wektora pojemników znajdują się same pojemniki koloru sortowanego. Iterację algorytmu kończy
+powięszenie strefy pojemników posortowanych.
+
+Wszystkie algorytmy mają złożoność O(n^3), natomiast algorytm trzeci, dla takich samych danych,
+jest znacznie szybszy niz dwa pozostale.
 -------------------------------------------------------------------------------------------------------
 5. Pliki źródłówe.
 -------------------------------------------------------------------------------------------------------
