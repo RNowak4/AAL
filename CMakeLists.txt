@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.3)
 project(AAL)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+
 #------------------------------------------- gtest ---------------------------------------------------------------------
 
 # Download and unpack gtest at configure time
@@ -20,9 +22,7 @@ add_subdirectory(${CMAKE_BINARY_DIR}/gtest-src
 target_include_directories(gtest INTERFACE
         "${CMAKE_BINARY_DIR}/gtest-src/include")
 
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
-
+#-------------------------------------------- main -------------------------------------
 set(SOURCE_FILES
         src/sources/Shelf.cpp
         src/headers/Shelf.h
@@ -31,12 +31,12 @@ set(SOURCE_FILES
         src/sources/Benchmark.cpp
         src/headers/Benchmark.h)
 
-#-------------------------------------------- main -------------------------------------
+
 set(MAIN_FILES src/main.cpp ${SOURCE_FILES})
 add_executable(AAL ${MAIN_FILES})
 
 
-#*************************** client tests **********************************************
+#------------------------------------ aal tests---------------------------------------
 set(TEST_FILES
         test/unitTest.cpp)
 
